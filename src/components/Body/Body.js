@@ -1,95 +1,83 @@
 import { useTranslation } from "react-i18next";
+import {useState} from 'react'
 import {
   Button,
   Container,
   Paper,
   TextField,
-  Divider,
   IconButton,
+  Menu as MuiMenu,
+  MenuItem,
+  ListItemText,
+  ListItemIcon
 } from "@mui/material";
+import {DoneAll,Delete,AutoDelete} from '@mui/icons-material'
 import { MoreVert, Add } from "@mui/icons-material";
+import List from '../List/List'
 
-const testList = [
-  {
-    id: "1",
-    text: "doing the dishes",
-    done: false,
-  },
-  {
-    id: "2",
-    text: "testing todo list",
-    done: false,
-  },
-  {
-    id: "3",
-    text: "hidden history or not",
-    done: true,
-  },
-  {
-    id: "4",
-    text: "drag and drop library",
-    done: false,
-  },
-  {
-    id: "5",
-    text: "lorem ipsum test text",
-    done: false,
-  },
-];
 
 function Body() {
-  const { t } = useTranslation();
+  const Theme = JSON.parse(localStorage.getItem('theme'))
+  const { t } = useTranslation()
   return (
-    <Container
-      fixed
-      sx={{
-        my: 5,
-        px: 1,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Paper sx={{ px: 3, py: 2, minWidth: "80%" }}>
-        <TextField
-          variant="outlined"
-          sx={{
-            width: "100%",
-            px: 0,
-            "& input": { px: 0, mx: 1 },
-            "&>div": { px: 0, alignItems: "stretch" },
-          }}
-          placeholder={t("addAction")}
-          InputProps={{
-            endAdornment: (
-              <IconButton sx={{ alignSelf: "center" }}>
-                <Add color="primary" />
-              </IconButton>
-            ),
-            startAdornment: (
-                <Menu/>
-            ),
-          }}
-        />
-        <ul>
-          {testList.map((item) => {
-            return (
-              <li key={item.id} style={{ width: "400px" }}>
-                {item.text}
-              </li>
-            );
-          })}
-        </ul>
-      </Paper>
-    </Container>
+      <Container
+        fixed
+        sx={{
+          my: 5,
+          px: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Paper sx={{ px: 3, py: 2, width: "90%",borderRadius:'10px',
+        bgcolor:((Theme === 'dark' && 'secondary.main') || 'secondary.secondary'),
+        color:((Theme === 'dark' && 'secondary.negative') || 'text.main') }}>
+          <TextField
+            variant="outlined"
+            color='secondary'
+            sx={{
+              width: "100%",
+              px: 0,
+              borderRadius:'6px',
+              textAlign:'auto',
+              '&:hover':{border:'none'},
+              "& input": { px: 1 },
+              "&>div": { px: 0, alignItems: "stretch"}
+            }}
+            placeholder={t("addAction")}
+            InputProps={{
+              endAdornment: (
+                <IconButton title={t("addAction")} sx={{ alignSelf: "center", mx:1 }}>
+                  <Add color="primary" />
+                </IconButton>
+              ),
+              startAdornment: (
+                  <Menu Theme={Theme}/>
+              ),
+            }}
+          />
+          <List/>
+        </Paper>
+      </Container>
   );
 }
 
 
-function Menu() {
+function Menu({Theme}) {
+  const {t} = useTranslation()
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl)
+  const handleOpen = (e)=>{
+    setAnchorEl(e.currentTarget)
+  }
+  const handleClose = ()=>{
+    setAnchorEl(null)
+  }
   return (
     <>
       <Button
+        onClick={handleOpen}
         sx={{
           bgcolor: "secondary.main",
           height: "auto",
@@ -97,14 +85,49 @@ function Menu() {
           mx: 0,
           p: 0,
           boxShadow: "none",
-          "&:hover": { bgcolor: "secondary.light", boxShadow: "none" },
+          "&:hover": { bgcolor: (Theme === 'dark' && 'secondary.negative') || "secondary.secondary", boxShadow: "none" },
         }}
         color="secondary"
         variant="contained"
       >
         <MoreVert color="primary" />
       </Button>
-      <Divider orientation="vertical" />
+      <MuiMenu sx={{filter:'brightness(90%)'}} anchorEl={anchorEl} open={open} onClose={handleClose} MenuListProps={{
+        sx:{bgcolor:'secondary.secondary'}
+      }}
+      anchorOrigin={{
+        horizontal:'center',
+        vertical:'center'
+      }}
+      transformOrigin={{
+        vertical:'top',
+        horizontal:'center'
+      }} >
+        <MenuItem onClick={handleClose}>
+          <ListItemIcon>
+            <DoneAll/>
+          </ListItemIcon>
+          <ListItemText>
+            {t('doneAll')}
+          </ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+        <ListItemIcon>
+            <AutoDelete/>
+          </ListItemIcon>
+          <ListItemText>
+            {t('clearHistory')}
+          </ListItemText>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+        <ListItemIcon>
+            <Delete/>
+          </ListItemIcon>
+          <ListItemText>
+            {t('deleteAll')}
+          </ListItemText>
+        </MenuItem>
+      </MuiMenu>
     </>
   );
 }

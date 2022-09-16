@@ -1,5 +1,6 @@
 import { createTheme,ThemeProvider } from '@mui/material/styles'
 import Loading from './components/Loading/Loading'
+import {Box} from '@mui/material'
 import {Container} from '@mui/material'
 import useLocalstorage from './hooks/useLocalstorage'
 import {useEffect, Suspense} from 'react'
@@ -14,12 +15,18 @@ import Body from './components/Body/Body'
 const translationEn = {
   todoTitle:'Todo List',
   addAction:'Add',
-  placeHolder:'i want to do ...'
+  placeHolder:'i want to do ...',
+  doneAll:'Done All',
+  clearHistory:'Clear History',
+  deleteAll:'Delete All',
 }
 const translationFa = {
   todoTitle:'لیست کارها',
   addAction:'اضافه کردن',
   placeHolder:'توضیح کار من ...',
+  doneAll:'انجام همه',
+  clearHistory:'پاک کردن تاریخچه',
+  deleteAll:'حذف همه',
 }
 
 i18n
@@ -43,42 +50,53 @@ const theme ={
     palette:{
       primary:{
         main:'#2241AA',
-        light:'#72E1D1',
-        dark:'#89A7A7'
+        secondary:'#72E1D1',
+        negative:'#89A7A7'
       },
       secondary:{
-        main:'#ffffff',
-        light:'#A09BE7',
-        dark:'#50514F'
+        main:'#d8d8d8',
+        secondary:'#ffffff',
+        negative:'#a0a0a0'
       },
       text:{
-        main:'#000',
-        secondary:'#ccc',
-        negative:'#fff'
+        main:'#000000',
+        secondary:'#cccccc',
+        negative:'#ffffff'
+      },
+      bg:{
+        main:'#ffffff',
+        secondary:'#eeeeee',
+        negative:'#000000',
       },
       custom:{
         switchbg:'#d4fffe',
-        switchthumb:'#fff',
+        switchthumb:'#ffffff',
         switchicon:'rgb(0,0,0)'
       }
     }
   }),
   dark:createTheme({
     palette:{
+      mode:'dark',
       primary:{
         main:'#34353b',
-        light:'#3d3f45',
-        dark:'#202124'
+        secondary:'#202124',
+        negative:'#3d3f45'
       },
       secondary:{
-        main:'#C38FFF',
-        light:'#dabaff',
-        dark:'#7e53b0'
+        main:'#9a63e2',
+        secondary:'#7e53b0',
+        negative:'#dabaff'
       },
       text:{
         main:'#fff',
         secondary:'#bbb',
         negative:'#000'
+      },
+      bg:{
+        main:'#ddd',
+        secondary:'#aaa',
+        negative:'#fff',
       },
       custom:{
         switchbg:'#000',
@@ -109,10 +127,12 @@ function App() {
     dispatch(getTodoList())
   },[dispatch])
   return (
-    <Suspense fallback={<Container sx={{width:'100vw',height:'100vh'}}><Loading/></Container>}>
+    <Suspense fallback={<Container fixed sx={{width:'100vw',height:'100vh'}}><Loading/></Container>}>
       <ThemeProvider theme={theme[localTheme]}>
-      <Navbar setTheme={setLocalTheme} Theme={localTheme}/>
-      <Body/>
+      <Box component='main' sx={{bgcolor:(localTheme === 'dark'&& 'primary.secondary')|| 'secondary.secondary',minHeight:'100vh'}}>
+        <Navbar setTheme={setLocalTheme} Theme={localTheme}/>
+        <Body/>
+      </Box>
       </ThemeProvider>
     </Suspense>
   );

@@ -71,18 +71,18 @@ function Navbar({Theme,setTheme}) {
   } 
   return (
     <Box sx={{position:'sticky',top:0,zIndex:'10'}}>
-      <AppBar sx={{position:'inherit',bgcolor:'primary.light',boxShadow:'none',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-evenly'}}>
-        <FormControl sx={{m:1}}>
-          <Select sx={{color:'text.main',px:1,bgcolor:'primary.light','& svg':{color:'secondary.dark'}}} value={currLang} onChange={handleLangChange}>
+      <AppBar sx={{position:'inherit',bgcolor:(Theme==='dark' && 'primary.negative') || 'primary.secondary',boxShadow:'none',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-evenly'}}>
+        <FormControl sx={{m:1,'&>div':{cursor:'default'}}}>
+          <Select sx={{color:'text.main',px:1,bgcolor:(Theme==='dark' && 'primary.negative') || 'primary.secondary','& svg':{color:(Theme==='dark' && 'secondary.secondary') || 'secondary.negative',}}} value={currLang} onChange={handleLangChange}>
             {languages.map((lang)=>(
-              <MenuItem sx={{justifyContent:'space-between','&:hover':{bgcolor:'secondary.light'},'& span':{mx:1}}} key={lang.code} value={lang.code}>
+              <MenuItem disabled={currLang === lang.code} sx={{justifyContent:'space-between','&:hover':{bgcolor:(Theme==='dark' && 'primary.negative') || 'primary.secondary'},'& span':{mx:1}}} key={lang.code} value={lang.code}>
                 <span className={`fi fi-${lang.flag}`}></span>
                 <span>{'\t'+lang.name}</span>
               </MenuItem>
             ))}
           </Select>
         </FormControl>
-        <Typography variant='h4' sx={{color:'secondary.main',fontFamily:"'Titan one', cursive , 'Lateef', cursive",fontWeight:'700',textShadow:Theme==='light' && '0 -2px 2px black',justifySelf:'center',m:'auto',userSelect:'none',display:{xs:'none',sm:'inline'}}}>
+        <Typography variant='h4' sx={{color:(Theme==='dark' && 'secondary.negative') || 'secondary.secondary',fontFamily:"'Titan one', cursive , 'Lateef', cursive",fontWeight:'700',textShadow:Theme==='light' && '0 -2px 1px black',justifySelf:'center',m:'auto',userSelect:'none',display:{xs:'none',sm:'inline'}}}>
           {t('todoTitle')}
         </Typography>
         <FormControlLabel control={<MuiSwitch sx={{my:'auto',mx:7}} checked={darkTheme} onChange={handleThemeChange}/>} />

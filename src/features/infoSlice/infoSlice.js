@@ -12,6 +12,9 @@ export const getTodoList = createAsyncThunk(
   }
 )
 
+// ? a todo sample:
+// todo: {text:string,id:number,color:string,done:boolean}
+
 const initialState = {
   todoList:[]
 }
@@ -19,11 +22,18 @@ const initialState = {
 const InfoSlice = createSlice({
   name:'info',
   initialState,
+  reducers:{
+    addTodo:(state,{payload})=>{
+      return {...state,todoList:{...state.todoList,payload}}
+    }
+  },
   extraReducers:{
     [getTodoList.fulfilled]:(state,{payload})=>{
       return {todoList: payload}
     }
   }
 })
+
+export const {addTodo} = InfoSlice.actions
 
 export default InfoSlice.reducer

@@ -12,6 +12,7 @@ import {
   localStorageUpdate,
   changeOrder,
   deleteTodo,
+  doneTodo
 } from "../../features/infoSlice/infoSlice";
 import { DragIndicator } from "@mui/icons-material";
 import { useId, useEffect } from "react";
@@ -39,6 +40,11 @@ function List() {
     dispatch(changeOrder(items));
     updateLS();
   };
+
+  const handleDone = (e)=>{
+    const id = e.target.parentElement.parentElement.parentElement.parentElement.id.split('-id:')[1]
+    dispatch(doneTodo(id))
+  }
 
   return (
     <DragDropContext onDragEnd={handleOrderChange}>
@@ -88,6 +94,8 @@ function List() {
                         <FormControlLabel
                           control={
                             <Checkbox
+                              onChange={handleDone}
+                              checked={item.done}
                               sx={{ "& svg": { color: "text.main" } }}
                               disableRipple
                               color="secondary"

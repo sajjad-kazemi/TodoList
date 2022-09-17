@@ -4,7 +4,7 @@ const welcomeList = [
     text:'Welcome to your Todo List',
     color:'colorList.1',
     id:1,
-    done:false
+    done:true
   },
   {
     text:'This Todo list was made by sajjad-kazemi with ♥',
@@ -22,13 +22,13 @@ const welcomeList = [
     text:'You can also change language to persian "فارسی" if you want!',
     color:'colorList.3',
     id:4,
-    done:false
+    done:true
   },
   {
     text:'And use the handle right before the checkbox to drag and drop the items',
     color:'colorList.4',
     id:5,
-    done:false
+    done:true
   },
   {
     text:'Also checkout my github page (github.com/sajjad-kazemi) the link is in bottom right of the page',
@@ -63,13 +63,34 @@ const InfoSlice = createSlice({
   initialState,
   reducers:{
     addTodo:(state,{payload})=>{
-      state.todoList.unshift(payload)
+      const todo = {
+        text:payload,
+        color:'colorList.1',
+        id:new Date().getTime(),
+        done:false
+      }
+      state.todoList.unshift(todo)
     },
     deleteTodo:(state,{payload})=>{
       state.todoList = state.todoList.filter(todo => todo.id !== payload)
     },
+    doneTodo:(state,{payload})=>{
+      const todoList = [...state.todoList]
+      todoList.forEach(todo=>{
+        if(todo.id !== +payload) return
+        todo.done = !todo.done
+      })
+      state.todoList = todoList
+    },
     changeOrder:(state,{payload})=>{
       state.todoList = payload
+    },
+    doneAll:(state)=>{
+      const todoList = [...state.todoList]
+      todoList.forEach(todo=>{
+        todo.done = true
+      })
+      state.todoList = todoList
     },
     deleteAll:(state)=>{
       state.todoList = []
@@ -88,6 +109,6 @@ const InfoSlice = createSlice({
   }
 })
 
-export const {addTodo,deleteTodo,changeOrder,deleteAll,clearHistory,localStorageUpdate} = InfoSlice.actions
+export const {addTodo,deleteTodo,changeOrder,deleteAll,clearHistory,localStorageUpdate,doneAll,doneTodo} = InfoSlice.actions
 export const getTodoList = (store) => store.info.todoList
 export default InfoSlice.reducer

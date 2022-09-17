@@ -15,10 +15,27 @@ import {
 import { DoneAll, Delete, AutoDelete } from "@mui/icons-material";
 import { MoreVert, Add } from "@mui/icons-material";
 import List from "../List/List";
+import {useDispatch} from 'react-redux'
+import {addTodo,localStorageUpdate,deleteAll,doneAll,clearHistory} from '../../features/infoSlice/infoSlice'
 
 function Body() {
   const Theme = JSON.parse(localStorage.getItem("theme"));
   const { t } = useTranslation();
+  const [todoInput, setTodoInput] = useState('');
+  const dispatch = useDispatch()
+  const AddTodo = ()=>{
+    if(todoInput === '') return
+    dispatch(addTodo(todoInput))
+    dispatch(localStorageUpdate());
+    setTodoInput('')
+  }
+
+  const handleSubmit = (e)=>{
+    if(e.key !== 'Enter') return
+    AddTodo()
+  }
+
+
   return (
     <Container
       fixed
@@ -45,6 +62,10 @@ function Body() {
         }}
       >
         <TextField
+          tabIndex={0}
+          value={todoInput}
+          onChange={(e)=>{setTodoInput(e.target.value)}}
+          onKeyDown={handleSubmit}
           variant="outlined"
           color="secondary"
           sx={{
@@ -60,6 +81,7 @@ function Body() {
           InputProps={{
             endAdornment: (
               <IconButton
+                onClick={AddTodo}
                 title={t("addAction")}
                 sx={{ alignSelf: "center", mx: 1 }}
               >
@@ -76,15 +98,21 @@ function Body() {
 }
 
 function Menu({ Theme }) {
-  const { t } = useTranslation();
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const { t } = useTranslation()
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
+  const dispatch = useDispatch()
   const handleOpen = (e) => {
-    setAnchorEl(e.currentTarget);
+    setAnchorEl(e.currentTarget)
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleActions = (Action) => {
+    handleClose()
+    Action()
+    dispatch(localStorageUpdate())
+  }
   return (
     <>
       <Button
@@ -125,21 +153,21 @@ function Menu({ Theme }) {
           horizontal: "center",
         }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={()=>handleActions(()=>dispatch(doneAll()))}>
           <ListItemIcon>
             <DoneAll />
           </ListItemIcon>
           <ListItemText>{t("doneAll")}</ListItemText>
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={()=>handleActions(()=>dispatch(clearHistory()))}>
           <ListItemIcon>
             <AutoDelete />
           </ListItemIcon>
           <ListItemText>{t("clearHistory")}</ListItemText>
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={()=>handleActions(()=>dispatch(deleteAll()))}>
           <ListItemIcon>
             <Delete />
           </ListItemIcon>

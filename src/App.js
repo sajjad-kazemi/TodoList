@@ -5,7 +5,7 @@ import {Container} from '@mui/material'
 import useLocalstorage from './hooks/useLocalstorage'
 import {useEffect, Suspense} from 'react'
 import {useDispatch} from 'react-redux'
-import {getTodoList} from './features/infoSlice/infoSlice'
+import {fetchTodoList} from './features/infoSlice/infoSlice'
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
@@ -72,6 +72,13 @@ const theme ={
         switchbg:'#d4fffe',
         switchthumb:'#ffffff',
         switchicon:'rgb(0,0,0)'
+      },
+      colorList:{
+        1:'#11abbb',
+        2:'#2ffaab',
+        3:'#aa6666',
+        4:'#aaaa31',
+        5:'#ffaccc'
       }
     }
   }),
@@ -102,6 +109,13 @@ const theme ={
         switchbg:'#000',
         switchthumb:'#eee',
         switchicon:'rgb(0,0,0)'
+      },
+      colorList:{
+        1:'#11abbb',
+        2:'#2ffaab',
+        3:'#aa6666',
+        4:'#aaaa31',
+        5:'#ffaccc'
       }
     }
   })
@@ -121,15 +135,21 @@ export const languages = [
   }
 ]
 function App() {
-  const [localTheme,setLocalTheme] = useLocalstorage('theme','dark')
+  const [localTheme,setLocalTheme] = useLocalstorage('theme','light')
   const dispatch = useDispatch()
   useEffect(()=>{
-    dispatch(getTodoList())
+    let isMounted = true
+    if(isMounted){
+      dispatch(fetchTodoList())
+    }
+    return () => {
+      isMounted = false;
+    }
   },[dispatch])
   return (
     <Suspense fallback={<Container fixed sx={{width:'100vw',height:'100vh'}}><Loading/></Container>}>
-      <ThemeProvider theme={theme[localTheme]}>
-      <Box component='main' sx={{bgcolor:(localTheme === 'dark'&& 'primary.secondary')|| 'secondary.secondary',minHeight:'100vh'}}>
+      <ThemeProvider theme={theme[localTheme]||'dark'}>
+      <Box component='main' sx={{bgcolor:(localTheme === 'dark' && 'primary.main') || 'secondary.secondary',minHeight:'100vh'}}>
         <Navbar setTheme={setLocalTheme} Theme={localTheme}/>
         <Body/>
       </Box>

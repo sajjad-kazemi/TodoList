@@ -33,24 +33,31 @@ function Body() {
   const { t } = useTranslation();
   const [todoInput, setTodoInput] = useState("");
   const dispatch = useDispatch();
-  let firstAdd = true
+  const [firstAdd, setFirstAdd] = useState(true);
   const AddTodo = (e) => {
+    let placeNumber = colorListPlace
     if(e) {
       e.currentTarget.previousSibling.focus()
     }
     if (todoInput === "") return;
     if(firstTodo && firstAdd){
-      setColorListPlace(+firstTodo.color.split('.')[1]+1)
-      firstAdd = false
+      const nextNumber = +firstTodo.color.split('.')[1]+1
+      if(nextNumber !== 6 ) {
+        placeNumber = nextNumber
+      }else{
+        placeNumber = 1
+      }
     }
-    dispatch(addTodo({text:todoInput,color:'colorList.'+colorListPlace}));
-    dispatch(localStorageUpdate());
-    setTodoInput("");
-    setColorListPlace(state=>state+1)
-    if(colorListPlace === 6){
-      setColorListPlace(1)
+    dispatch(addTodo({text:todoInput,color:'colorList.'+placeNumber}));
+    dispatch(localStorageUpdate())
+    setTodoInput("")
+    if(placeNumber !== 5){
+      placeNumber++
+    }else{
+      placeNumber = 1
     }
-    firstAdd = false
+    setFirstAdd(false)
+    setColorListPlace(placeNumber)
   };
 
   const handleSubmit = (e) => {

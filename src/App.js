@@ -17,16 +17,20 @@ const translationEn = {
   addAction:'Add',
   placeHolder:'i want to do ...',
   doneAll:'Done All',
+  undoneAll:'Undone All',
   clearHistory:'Clear History',
   deleteAll:'Delete All',
+  changeColor:'Change the color',
 }
 const translationFa = {
   todoTitle:'لیست کارها',
   addAction:'اضافه کردن',
   placeHolder:'توضیح کار من ...',
   doneAll:'انجام همه',
+  undoneAll:'هیچکدام انجام نشده',
   clearHistory:'پاک کردن تاریخچه',
   deleteAll:'حذف همه',
+  changeColor:'تغییر رنگ',
 }
 
 i18n
@@ -74,10 +78,10 @@ const theme ={
         switchicon:'rgb(0,0,0)'
       },
       colorList:{
-        1:'#11abbb',
-        2:'#2ffaab',
-        3:'#aa6666',
-        4:'#aaaa31',
+        1:'#5386E4',
+        2:'#26C485',
+        3:'#FF715B',
+        4:'#E9CE2C',
         5:'#ffaccc'
       }
     }
@@ -111,11 +115,11 @@ const theme ={
         switchicon:'rgb(0,0,0)'
       },
       colorList:{
-        1:'#11abbb',
-        2:'#2ffaab',
+        1:'#177E89',
+        2:'#60992D',
         3:'#aa6666',
         4:'#aaaa31',
-        5:'#ffaccc'
+        5:'#EF626C'
       }
     }
   })

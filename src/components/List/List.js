@@ -5,6 +5,7 @@ import {
   ListItem,
   Checkbox,
   FormControlLabel,
+  IconButton,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -12,11 +13,13 @@ import {
   localStorageUpdate,
   changeOrder,
   deleteTodo,
-  doneTodo
+  doneTodo,
 } from "../../features/infoSlice/infoSlice";
-import { DragIndicator } from "@mui/icons-material";
-import { useId, useEffect } from "react";
+import { DragIndicator, DeleteOutline } from "@mui/icons-material";
+import { useId } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import ColorList from './ColorList'
+
 
 function List() {
   const uniqueId = useId();
@@ -27,13 +30,8 @@ function List() {
     dispatch(localStorageUpdate());
   };
 
-  const handleRemove = (e) => {
-    const id = 0
-    dispatch(deleteTodo(id))
-  }
-
   const handleOrderChange = (result) => {
-    if(!result.destination) return
+    if (!result.destination) return;
     const items = [...todoList];
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
@@ -41,10 +39,20 @@ function List() {
     updateLS();
   };
 
-  const handleDone = (e)=>{
-    const id = e.target.parentElement.parentElement.parentElement.parentElement.id.split('-id:')[1]
-    dispatch(doneTodo(id))
-  }
+  const handleDone = (e) => {
+    const id =
+      e.currentTarget.parentElement.parentElement.parentElement.parentElement.id.split(
+        "-id:"
+      )[1];
+    dispatch(doneTodo(id));
+    updateLS();
+  };
+
+  const handleRemove = (e) => {
+    const id = +e.currentTarget.parentElement.parentElement.id.split("-id:")[1];
+    dispatch(deleteTodo(id));
+    updateLS();
+  };
 
   return (
     <DragDropContext onDragEnd={handleOrderChange}>
@@ -58,7 +66,11 @@ function List() {
                 index={index}
               >
                 {(provided) => (
-                  <Box {...provided.draggableProps} ref={provided.innerRef}>
+                  <Box
+                    sx={{ filter: item.done && "brightness(70%)",textDecoration:item.done && 'line-through',textDecorationColor:'text.secondary' }}
+                    {...provided.draggableProps}
+                    ref={provided.innerRef}
+                  >
                     <ListItem
                       id={`${uniqueId}-id:${item.id}`}
                       sx={{
@@ -67,8 +79,8 @@ function List() {
                         justifyContent: "space-between",
                         borderRadius: "6px",
                         my: 1,
-                        bgcolor: item.color || "#eee",
-                        color: "text.main",
+                        bgcolor: item.color || "colorList.1",
+                        color: (item.done && "text.secondary") || "text.main",
                       }}
                     >
                       <Box
@@ -87,7 +99,9 @@ function List() {
                             sx={{
                               justifySelf: "flex-start",
                               filter: "brightness(90%)",
-                              '&:active , &:hover':{color:'secondary.negative'}
+                              "&:active , &:hover": {
+                                color: "secondary.secondary",
+                              },
                             }}
                           />
                         </span>
@@ -109,7 +123,16 @@ function List() {
                           }
                         />
                       </Box>
-                      <Box>options!!</Box>
+                      <Box sx={{display:'flex',flexDirection:'row'}}>
+                        <IconButton
+                          sx={{ color: "primary.main" }}
+                          disableRipple
+                          onClick={handleRemove}
+                        >
+                          <DeleteOutline />
+                        </IconButton>
+                        <ColorList Item={item} />
+                      </Box>
                     </ListItem>
                   </Box>
                 )}

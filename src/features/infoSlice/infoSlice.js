@@ -4,10 +4,10 @@ const welcomeList = [
     text:'Welcome to your Todo List',
     color:'colorList.1',
     id:1,
-    done:true
+    done:false
   },
   {
-    text:'This Todo list was made by sajjad-kazemi with ♥',
+    text:'This Todo list was made by sajjad-kazemi with ❤',
     color:'colorList.1',
     id:2,
     done:false
@@ -22,13 +22,13 @@ const welcomeList = [
     text:'You can also change language to persian "فارسی" if you want!',
     color:'colorList.3',
     id:4,
-    done:true
+    done:false
   },
   {
     text:'And use the handle right before the checkbox to drag and drop the items',
     color:'colorList.4',
     id:5,
-    done:true
+    done:false
   },
   {
     text:'Also checkout my github page (github.com/sajjad-kazemi) the link is in bottom right of the page',
@@ -64,8 +64,8 @@ const InfoSlice = createSlice({
   reducers:{
     addTodo:(state,{payload})=>{
       const todo = {
-        text:payload,
-        color:'colorList.1',
+        text:payload.text,
+        color:payload.color,
         id:new Date().getTime(),
         done:false
       }
@@ -85,10 +85,26 @@ const InfoSlice = createSlice({
     changeOrder:(state,{payload})=>{
       state.todoList = payload
     },
+    changeColor:(state,{payload})=>{
+      const {id,color} = payload
+      const todoList = [...state.todoList]
+      todoList.forEach(todo=>{
+        if(todo.id !== id) return
+        todo.color = color
+      })
+      state.todoList = todoList
+    },
     doneAll:(state)=>{
       const todoList = [...state.todoList]
       todoList.forEach(todo=>{
         todo.done = true
+      })
+      state.todoList = todoList
+    },
+    undoneAll:(state)=>{
+      const todoList = [...state.todoList]
+      todoList.forEach(todo=>{
+        todo.done = false
       })
       state.todoList = todoList
     },
@@ -109,6 +125,7 @@ const InfoSlice = createSlice({
   }
 })
 
-export const {addTodo,deleteTodo,changeOrder,deleteAll,clearHistory,localStorageUpdate,doneAll,doneTodo} = InfoSlice.actions
+export const {addTodo,deleteTodo,changeOrder,deleteAll,clearHistory,localStorageUpdate,doneAll,doneTodo,changeColor,undoneAll} = InfoSlice.actions
 export const getTodoList = (store) => store.info.todoList
+export const getFirstTodo = (store) => store.info.todoList[0] || false
 export default InfoSlice.reducer
